@@ -151,7 +151,7 @@ export default function EnquiryModal() {
 
               <div className="flex items-center gap-3.5 pr-8">
                 <img 
-                  src="/imperial-logo.png" 
+                  src={`${import.meta.env.BASE_URL}imperial-logo.png`} 
                   alt="Imperial Study Abroad" 
                   className="w-12 h-12 rounded-full object-contain ring-2 ring-gold-400/80 bg-navy-950 p-0.5 shadow-md flex-shrink-0"
                 />

@@ -91,7 +91,9 @@ export const universitiesData = [
     minGpa: "65% or 3.2/4.0",
     ielts: "6.5 overall (min 6.0)",
     intakes: ["February", "July"],
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80",
+    image: "https://upload.wikimedia.org/wikipedia/commons/4/48/Oldquad.jpg",
+    imageCredit: "Photo: Pei Han Chang · CC BY-SA 4.0",
+    imageSource: "https://commons.wikimedia.org/wiki/File:Oldquad.jpg",
     description: "Consistently ranked Australia's number one university, offering flexible graduate degrees and vibrant campus culture."
   },
   {

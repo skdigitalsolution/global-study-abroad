@@ -92,7 +92,7 @@ export default function Navbar() {
           {/* Logo & Brand Identity (Clean Single-Line Presentation) */}
           <Link to="/" className="flex items-center gap-3.5 group focus:outline-none flex-shrink-0">
             <img 
-              src="/imperial-logo.png" 
+              src={`${import.meta.env.BASE_URL}imperial-logo.png`} 
               alt="Imperial Study Abroad Logo" 
               className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-contain shadow-md shadow-gold-500/20 ring-2 ring-gold-400/80 p-0.5 bg-navy-950 group-hover:scale-105 transition-transform"
             />

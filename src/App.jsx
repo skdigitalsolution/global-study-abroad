@@ -18,7 +18,7 @@ import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <ScrollToTop />
       {/* Auto-opening Enquiry Modal on website open with quick reopen tab */}
       <EnquiryModal />

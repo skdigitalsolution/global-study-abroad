@@ -17,7 +17,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3.5 mb-4 group focus:outline-none">
               <img 
-                src="/imperial-logo.png" 
+                src={`${import.meta.env.BASE_URL}imperial-logo.png`} 
                 alt="Imperial Study Abroad Logo" 
                 className="h-12 w-12 rounded-full object-contain ring-2 ring-gold-400/80 bg-navy-900 p-0.5 shadow-lg group-hover:scale-105 transition-transform"
               />

@@ -172,10 +172,16 @@ export default function UniversitiesPage() {
                 <div className="relative h-44 overflow-hidden bg-slate-100">
                   <img
                     src={uni.image}
+                    referrerPolicy="no-referrer"
                     alt={`Campus of ${uni.name}`}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
+                  {uni.imageCredit && (
+                    <a href={uni.imageSource} target="_blank" rel="noopener noreferrer" className="absolute bottom-1 right-1 rounded bg-navy-950/80 px-2 py-1 text-[9px] text-white">
+                      {uni.imageCredit}
+                    </a>
+                  )}
                   <div className="absolute top-3 left-3 bg-white/95 px-2.5 py-1 rounded-full text-xs font-bold text-navy-900 shadow flex items-center gap-1.5">
                     <span>{uni.flag}</span>
                     <span>{uni.countryName}</span>
