@@ -1,0 +1,58 @@
+export const internshipOpportunities = [
+  {
+    id: 'technology-web',
+    title: 'Web experience project',
+    industry: 'Technology',
+    workMode: 'Remote',
+    description: 'An illustrative project exploring accessible page design, basic front-end concepts and clear team updates.',
+  },
+  {
+    id: 'technology-data',
+    title: 'Data research project',
+    industry: 'Technology',
+    workMode: 'Hybrid',
+    description: 'A sample learning brief focused on organising a small dataset and explaining observations to a group.',
+  },
+  {
+    id: 'business-operations',
+    title: 'Business operations project',
+    industry: 'Business',
+    workMode: 'On-site',
+    description: 'A fictional project about documenting a workflow, asking useful questions and presenting improvement ideas.',
+  },
+  {
+    id: 'business-analysis',
+    title: 'Market analysis exercise',
+    industry: 'Business',
+    workMode: 'Remote',
+    description: 'A made-up practice brief for comparing public information and summarising a business question.',
+  },
+  {
+    id: 'marketing-content',
+    title: 'Content planning project',
+    industry: 'Marketing',
+    workMode: 'Hybrid',
+    description: 'An illustrative exercise in planning audience-focused content and reviewing its clarity.',
+  },
+  {
+    id: 'marketing-research',
+    title: 'Audience research exercise',
+    industry: 'Marketing',
+    workMode: 'On-site',
+    description: 'A fictional learning activity about collecting feedback responsibly and presenting useful themes.',
+  },
+  {
+    id: 'design-interface',
+    title: 'Interface design project',
+    industry: 'Design',
+    workMode: 'Remote',
+    description: 'A sample design brief to practise exploring user needs, sketching ideas and explaining design choices.',
+  },
+  {
+    id: 'research-literature',
+    title: 'Research and literature review',
+    industry: 'Research',
+    workMode: 'Hybrid',
+    description: 'An illustrative academic-style project involving source organisation and a concise written summary.',
+  },
+];

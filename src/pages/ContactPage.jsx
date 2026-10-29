@@ -23,7 +23,7 @@ export default function ContactPage() {
   });
 
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState('idle');
+  const [status] = useState('idle');
 
   const validate = () => {
     const errs = {};
@@ -42,19 +42,7 @@ export default function ContactPage() {
       return;
     }
 
-    setErrors({});
-    setStatus('submitting');
-    setTimeout(() => {
-      setStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        office: 'mumbai',
-        subject: '',
-        message: ''
-      });
-    }, 900);
+    setErrors({ submission: 'Online messaging is not connected. Your message has not been sent.' });
   };
 
   return (
@@ -138,6 +126,8 @@ export default function ContactPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+                <p className="text-sm text-slate-600" role="status">Online submission is not connected. No details will be sent.</p>
+                {errors.submission && <p role="alert" className="text-sm text-amber-800">{errors.submission}</p>}
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">Full Name *</label>
                   <input

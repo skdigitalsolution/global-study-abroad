@@ -1,4 +1,6 @@
-export const universitiesData = [
+import { regionalUniversities } from './regionalUniversities';
+
+const existingUniversities = [
   {
     id: "uni-1",
     name: "University of Manchester",
@@ -153,5 +155,11 @@ export const universitiesData = [
     image: "https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?auto=format&fit=crop&w=800&q=80",
     description: "Voted #1 in the US for Innovation ahead of MIT and Stanford, with high scholarship acceptance for international applicants."
   }
+];
+
+const normaliseName = (name) => name.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
+export const universitiesData = [
+  ...existingUniversities,
+  ...regionalUniversities.filter((university) => !existingUniversities.some((existing) => normaliseName(existing.name) === normaliseName(university.name))),
 ];
 

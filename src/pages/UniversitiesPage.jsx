@@ -1,29 +1,28 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { 
   Search, 
   MapPin, 
-  GraduationCap, 
-  BookOpen, 
-  Banknote, 
-  SlidersHorizontal,
   X,
-  ExternalLink,
-  Award
 } from 'lucide-react';
 import SectionTitle from '../components/common/SectionTitle';
 import Button from '../components/common/Button';
 import { universitiesData } from '../data/universitiesData';
+import { matchesUniversityDestination } from '../data/regionalUniversities';
 
 export default function UniversitiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const initialCountry = searchParams.get('country') || '';
-  const initialDegree = searchParams.get('degree') || '';
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(initialCountry);
-  const [selectedDegree, setSelectedDegree] = useState(initialDegree);
+  const selectedCountry = searchParams.get('country') || '';
+  const selectedDegree = searchParams.get('degree') || '';
+  const searchQuery = searchParams.get('q') || '';
+  function updateFilter(key, value) {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      if (value) next.set(key, value); else next.delete(key);
+      return next;
+    }, { replace: true });
+  }
   const [sortBy, setSortBy] = useState('ranking');
   const [selectedUniModal, setSelectedUniModal] = useState(null);
 
@@ -35,22 +34,23 @@ export default function UniversitiesPage() {
           uni.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
           uni.programs.some(p => p.toLowerCase().includes(searchQuery.toLowerCase()));
 
-        const matchesCountry = selectedCountry ? uni.country === selectedCountry : true;
+        const matchesCountry = matchesUniversityDestination(uni, selectedCountry);
         const matchesDegree = selectedDegree ? uni.studyLevels.includes(selectedDegree) : true;
 
         return matchesSearch && matchesCountry && matchesDegree;
       })
       .sort((a, b) => {
-        if (sortBy === 'tuition-low') return a.tuitionNum - b.tuitionNum;
-        if (sortBy === 'tuition-high') return b.tuitionNum - a.tuitionNum;
+        if (sortBy === 'tuition-low' || sortBy === 'tuition-high') {
+          if (a.tuitionNum == null && b.tuitionNum == null) return a.name.localeCompare(b.name);
+          if (a.tuitionNum == null) return 1;
+          if (b.tuitionNum == null) return -1;
+          return sortBy === 'tuition-low' ? a.tuitionNum - b.tuitionNum : b.tuitionNum - a.tuitionNum;
+        }
         return a.name.localeCompare(b.name);
       });
   }, [searchQuery, selectedCountry, selectedDegree, sortBy]);
 
   const handleReset = () => {
-    setSearchQuery('');
-    setSelectedCountry('');
-    setSelectedDegree('');
     setSortBy('ranking');
     setSearchParams({});
   };
@@ -86,7 +86,7 @@ export default function UniversitiesPage() {
                   type="text"
                   placeholder="University, city or program..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => updateFilter('q', e.target.value)}
                   className="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-gold-500"
                 />
               </div>
@@ -97,7 +97,7 @@ export default function UniversitiesPage() {
               <label className="block text-xs font-bold text-slate-600 mb-1.5">Destination</label>
               <select
                 value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
+                onChange={(e) => updateFilter('country', e.target.value)}
                 className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:border-gold-500"
               >
                 <option value="">All Countries</option>
@@ -107,6 +107,16 @@ export default function UniversitiesPage() {
                 <option value="australia">Australia</option>
                 <option value="germany">Germany</option>
                 <option value="ireland">Ireland</option>
+                <option value="new-zealand">New Zealand</option>
+                <option value="europe">Europe (All listed countries)</option>
+                <option value="asia">Asia (All listed countries)</option>
+                <option value="netherlands">Netherlands</option>
+                <option value="france">France</option>
+                <option value="italy">Italy</option>
+                <option value="singapore">Singapore</option>
+                <option value="japan">Japan</option>
+                <option value="south-korea">South Korea</option>
+                <option value="malaysia">Malaysia</option>
               </select>
             </div>
 
@@ -115,7 +125,7 @@ export default function UniversitiesPage() {
               <label className="block text-xs font-bold text-slate-600 mb-1.5">Study Level</label>
               <select
                 value={selectedDegree}
-                onChange={(e) => setSelectedDegree(e.target.value)}
+                onChange={(e) => updateFilter('degree', e.target.value)}
                 className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:border-gold-500"
               >
                 <option value="">All Degrees</option>
@@ -173,7 +183,7 @@ export default function UniversitiesPage() {
                   <img
                     src={uni.image}
                     referrerPolicy="no-referrer"
-                    alt={`Campus of ${uni.name}`}
+                    alt={uni.imageAlt || `Campus of ${uni.name}`}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -199,19 +209,28 @@ export default function UniversitiesPage() {
                     </p>
 
                     <div className="mt-4 space-y-2 text-xs border-t border-slate-100 pt-3">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-3 items-start">
                         <span className="text-slate-500">Tuition:</span>
-                        <span className="font-semibold text-navy-900">{uni.tuitionRange}</span>
+                        <span className="font-semibold text-navy-900 text-right min-w-0 break-words">{uni.tuitionRange}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Min. Requirements:</span>
-                        <span className="font-semibold text-slate-800">{uni.ielts}</span>
+                      <div className="flex justify-between gap-3 items-start">
+                        <span className="text-slate-500">{uni.englishSource ? 'English (indicative):' : 'Min. Requirements:'}</span>
+                        <span className="font-semibold text-slate-800 text-right min-w-0 break-words">{uni.ielts}</span>
                       </div>
                     </div>
+                    {uni.feesSource && (
+                      <div className="mt-3 text-[10px] text-slate-500 leading-relaxed">
+                        <p>Programme-specific examples, not admission guarantees. See source notes in eligibility details.</p>
+                        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+                          <a href={uni.feesSource} target="_blank" rel="noopener noreferrer" className="text-navy-700 underline underline-offset-2">Official fees<span className="sr-only"> for {uni.name} (new tab)</span></a>
+                          <a href={uni.englishSource} target="_blank" rel="noopener noreferrer" className="text-navy-700 underline underline-offset-2">English requirements<span className="sr-only"> for {uni.name} (new tab)</span></a>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="mt-3">
                       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                        Sample Programs:
+                        {uni.planningOnly ? 'Course Information:' : 'Sample Programs:'}
                       </span>
                       <div className="flex flex-wrap gap-1">
                         {uni.programs.slice(0, 2).map((prog, idx) => (
@@ -230,9 +249,9 @@ export default function UniversitiesPage() {
                     >
                       View Eligibility Details
                     </button>
-                    <Link to={`/book-counselling?country=${uni.country}`}>
+                    <Link to={uni.planningOnly ? '/services/counselling#enquiry' : `/book-counselling?country=${uni.country}`}>
                       <Button variant="primary" size="sm">
-                        Apply Now
+                        {uni.planningOnly ? 'Enquire Now' : 'Apply Now'}
                       </Button>
                     </Link>
                   </div>
@@ -253,7 +272,7 @@ export default function UniversitiesPage() {
         {/* Modal for University Details */}
         {selectedUniModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/70 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div className="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl border border-slate-200">
               <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{selectedUniModal.flag}</span>
@@ -274,28 +293,36 @@ export default function UniversitiesPage() {
                 <p className="text-slate-600 leading-relaxed">{selectedUniModal.description}</p>
                 <div className="p-3 bg-slate-50 rounded-xl space-y-2">
                   <div className="flex justify-between">
-                    <span className="font-semibold text-slate-500">Ranking:</span>
+                    <span className="font-semibold text-slate-500">{selectedUniModal.planningOnly ? 'Listing:' : 'Ranking:'}</span>
                     <span className="font-bold text-gold-600">{selectedUniModal.ranking}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-3">
                     <span className="font-semibold text-slate-500">Tuition Range:</span>
-                    <span className="font-bold text-navy-900">{selectedUniModal.tuitionRange}</span>
+                    <span className="font-bold text-navy-900 text-right min-w-0 break-words">{selectedUniModal.tuitionRange}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold text-slate-500">Academic Cutoff:</span>
                     <span className="font-bold text-slate-800">{selectedUniModal.minGpa}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-3">
                     <span className="font-semibold text-slate-500">English Standard:</span>
-                    <span className="font-bold text-slate-800">{selectedUniModal.ielts}</span>
+                    <span className="font-bold text-slate-800 text-right min-w-0 break-words">{selectedUniModal.ielts}</span>
                   </div>
                 </div>
+                {selectedUniModal.feesSource && (
+                  <div className="space-y-3 text-xs leading-relaxed text-slate-600">
+                    <p><strong>Fee scope:</strong> {selectedUniModal.tuitionContext} <a href={selectedUniModal.feesSource} target="_blank" rel="noopener noreferrer" className="underline text-navy-700">Official fee source (new tab)</a></p>
+                    <p><strong>English scope:</strong> {selectedUniModal.englishContext} <a href={selectedUniModal.englishSource} target="_blank" rel="noopener noreferrer" className="underline text-navy-700">Official English/admissions source (new tab)</a></p>
+                    <p>Reviewed {selectedUniModal.requirementsReviewedOn}. Fees exclude living costs. Confirm the exact programme, study level, fee status and intake; meeting a language threshold does not guarantee admission.</p>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 flex gap-3">
-                <Link to={`/book-counselling?country=${selectedUniModal.country}`} className="flex-1">
+                {selectedUniModal.officialUrl && <a href={selectedUniModal.officialUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold underline self-center">Official course information</a>}
+                <Link to={selectedUniModal.planningOnly ? '/services/counselling#enquiry' : `/book-counselling?country=${selectedUniModal.country}`} className="flex-1">
                   <Button variant="primary" size="md" className="w-full font-bold">
-                    Apply to this University
+                    {selectedUniModal.planningOnly ? 'Prepare an enquiry' : 'Apply to this University'}
                   </Button>
                 </Link>
                 <Button variant="outline" size="md" onClick={() => setSelectedUniModal(null)}>

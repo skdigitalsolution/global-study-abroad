@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { 
+  Compass,
   Menu, 
   X, 
   PhoneCall, 
@@ -8,13 +9,14 @@ import {
   Sparkles,
   ArrowRight
 } from 'lucide-react';
-import Button from './Button';
 import MobileMenu from './MobileMenu';
+import NavigationItems from './NavigationItems';
+import { navigationData } from '../../data/navigationData';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const closeMenu = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,10 +27,6 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setIsOpen(false);
     };
@@ -36,14 +34,7 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // "Home" link removed as requested; clicking the logo navigates to homepage
-  const navLinks = [
-    { name: 'Destinations', path: '/destinations' },
-    { name: 'Universities', path: '/universities' },
-    { name: 'Services', path: '/services' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-  ];
+  const navLinks = navigationData;
 
   return (
     <>
@@ -53,10 +44,10 @@ export default function Navbar() {
           
           <div className="flex items-center gap-2.5 text-center sm:text-left">
             <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-gold-500/20 text-gold-300 border border-gold-400/40 px-3 py-0.5 rounded-full font-bold text-[11px] shadow-sm">
-              <Sparkles className="w-3 h-3 text-gold-400" /> Admissions Open
+              <Sparkles className="w-3 h-3 text-gold-400" /> Explore your next chapter
             </span>
             <span className="text-slate-300 text-xs hidden md:inline">
-              Jayshree Charitable Trust • Empowering Global Education & Careers
+              GlobalPath ? Explore your study abroad possibilities
             </span>
           </div>
 
@@ -91,62 +82,28 @@ export default function Navbar() {
           
           {/* Logo & Brand Identity (Clean Single-Line Presentation) */}
           <Link to="/" className="flex items-center gap-3.5 group focus:outline-none flex-shrink-0">
-            <img 
-              src={`${import.meta.env.BASE_URL}imperial-logo.png`} 
-              alt="Imperial Study Abroad Logo" 
-              className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-contain shadow-md shadow-gold-500/20 ring-2 ring-gold-400/80 p-0.5 bg-navy-950 group-hover:scale-105 transition-transform"
-            />
-
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 whitespace-nowrap leading-tight">
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-white font-serif">
-                  Imperial
-                </span>
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-amber-300 to-yellow-200">
-                  Study Abroad
-                </span>
-              </div>
-              <span className="text-[9.5px] sm:text-[10px] tracking-widest uppercase font-bold text-slate-400 mt-0.5 whitespace-nowrap">
-                A Unit of Jayshree Charitable Trust
-              </span>
-            </div>
+            <Compass className="h-11 w-11 rounded-full border border-gold-400 p-2 text-gold-400" aria-hidden="true" />
+            <div><span className="block text-2xl font-bold text-white">Global<span className="text-gold-400">Path</span></span><span className="text-[10px] uppercase tracking-widest text-slate-300">Your study abroad journey</span></div>
           </Link>
 
           {/* Desktop Navigation Links (No 'Home' text, Spaced & No-wrap) */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 mx-4" aria-label="Main Navigation">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.name}
-                to={link.path}
-                className={({ isActive }) =>
-                  `px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 whitespace-nowrap ${
-                    isActive
-                      ? 'text-gold-400 bg-navy-800/90 shadow-md border border-gold-400/30 font-bold'
-                      : 'text-slate-200 hover:text-white hover:bg-navy-800/60'
-                  }`
-                }
-              >
-                {link.name}
-              </NavLink>
-            ))}
+          <nav className="hidden xl:flex items-center gap-1 xl:gap-2 mx-4" aria-label="Main Navigation">
+            <NavigationItems navLinks={navLinks} />
           </nav>
 
           {/* Right Action CTA & Direct Helpline */}
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+          <div className="hidden xl:flex items-center gap-3 flex-shrink-0">
             <a 
               href="tel:+919326775718" 
-              className="hidden xl:flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-gold-400 bg-navy-950/80 hover:bg-navy-800/90 px-3.5 py-2.5 rounded-xl border border-navy-700/80 transition-all shadow-sm whitespace-nowrap"
+              className="hidden 2xl:flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-gold-400 bg-navy-950/80 hover:bg-navy-800/90 px-3.5 py-2.5 rounded-xl border border-navy-700/80 transition-all shadow-sm whitespace-nowrap"
               title="Call Campus Helpline"
             >
               <PhoneCall className="w-3.5 h-3.5 text-gold-400" />
               <span className="font-mono font-bold">+91 9326775718</span>
             </a>
 
-            <Link to="/book-counselling" tabIndex={-1}>
-              <Button variant="primary" size="md" className="whitespace-nowrap shadow-lg shadow-gold-500/20">
-                Book Free Counselling
-                <ArrowRight className="w-4 h-4 ml-1.5" />
-              </Button>
+            <Link to="/services/counselling#enquiry" className="inline-flex items-center gap-2 rounded-xl bg-gold-400 px-5 py-3 text-sm font-bold text-navy-950 hover:bg-gold-300 whitespace-nowrap">
+              Plan Your Studies <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -154,7 +111,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer"
+            className="xl:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer"
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
           >
@@ -166,7 +123,7 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       <MobileMenu 
         isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
+        onClose={closeMenu}
         navLinks={navLinks} 
       />
     </>

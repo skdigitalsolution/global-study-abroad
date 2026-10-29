@@ -15,11 +15,8 @@ export default function NewsletterSection() {
       return;
     }
 
-    setStatus('loading');
-    setTimeout(() => {
-      setStatus('success');
-      setEmail('');
-    }, 700);
+    setStatus('error');
+    setErrorMessage('Newsletter signup is not connected. Your email has not been sent or subscribed.');
   };
 
   return (

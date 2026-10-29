@@ -1,4 +1,8 @@
-# React + Vite
+# GlobalPath Study Abroad
+
+Read the [complete website workflow and technology guide](docs/website-workflow-and-technology-guide.md) for the route map, visitor journeys, features, technologies, data flow, setup, verification, deployment and current limitations.
+
+## Original Vite template notes
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

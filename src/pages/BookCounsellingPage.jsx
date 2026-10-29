@@ -30,7 +30,7 @@ export default function BookCounsellingPage() {
   });
 
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
   const [successBookingId, setSuccessBookingId] = useState(null);
 
   const validate = () => {
@@ -50,14 +50,7 @@ export default function BookCounsellingPage() {
       return;
     }
 
-    setErrors({});
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const demoRef = 'GP-' + Math.floor(10000 + Math.random() * 90000);
-      setSuccessBookingId(demoRef);
-    }, 800);
+    setErrors({ submission: 'Online booking is not connected. No session has been booked and your details have not been sent.' });
   };
 
   return (
@@ -80,6 +73,8 @@ export default function BookCounsellingPage() {
 
         <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-xl">
           <form onSubmit={handleBooking} className="space-y-6 text-xs">
+                <p className="text-sm text-slate-600" role="status">Online submission is not connected. No details will be sent.</p>
+                {errors.submission && <p role="alert" className="text-sm text-amber-800">{errors.submission}</p>}
             
             {/* Personal Details */}
             <div>

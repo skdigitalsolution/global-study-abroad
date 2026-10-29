@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Building2, 
-  GraduationCap, 
   Plane, 
   Award, 
   Target, 
   Compass, 
   HeartHandshake, 
   BookOpen, 
-  Briefcase, 
-  Users, 
   CheckCircle2, 
   MapPin, 
   Phone, 
@@ -18,7 +15,6 @@ import {
   ExternalLink, 
   ShieldCheck, 
   Sparkles, 
-  ArrowRight,
   Utensils,
   Shirt,
   Heart,
@@ -26,6 +22,7 @@ import {
 } from 'lucide-react';
 import SectionTitle from '../components/common/SectionTitle';
 import Button from '../components/common/Button';
+import { IIAMLearningEnvironment, IIAMPracticalPhotos, IIAMStudentLife } from '../components/about/IIAMImageSections';
 
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState('management');
@@ -94,6 +91,8 @@ export default function AboutPage() {
             Founded under the visionary auspices of <strong>JAYSHREE CHARITABLE TRUST</strong>, we cultivate industry-ready leaders in Business Management, Aviation, and Hospitality through our two premier institutes.
           </p>
         </div>
+
+        <IIAMLearningEnvironment />
 
         {/* Jayshree Charitable Trust Spotlight Card */}
         <div className="bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 text-white rounded-3xl p-8 sm:p-12 border border-navy-700 shadow-2xl mb-16">
@@ -203,7 +202,7 @@ export default function AboutPage() {
 
           {/* Institute Tab Selector */}
           <div className="flex justify-center mb-10">
-            <div className="inline-flex bg-slate-200/80 p-1.5 rounded-2xl gap-2">
+            <div className="inline-flex flex-col sm:flex-row bg-slate-200/80 p-1.5 rounded-2xl gap-2">
               <button
                 onClick={() => setActiveTab('management')}
                 className={`px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
@@ -357,9 +356,12 @@ export default function AboutPage() {
                   </ul>
                 </div>
               </div>
+              <IIAMPracticalPhotos />
             </div>
           )}
         </div>
+
+        <IIAMStudentLife />
 
         {/* Specializations Grid */}
         <div className="mb-16">

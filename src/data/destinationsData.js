@@ -1,3 +1,5 @@
+import { extendedDestinationGuides } from './extendedDestinationGuides';
+
 // Sample destinations data with realistic international education details
 export const destinationsData = [
   {
@@ -101,6 +103,15 @@ export const destinationsData = [
     popularCourses: ["Cloud Computing", "Pharmaceutical Sciences", "Data Analytics", "FinTech"],
     admissionMin: "60%+ in Bachelor's",
     ieltsMin: "6.5 overall"
-  }
+  },
+  ...Object.entries(extendedDestinationGuides).map(([slug, guide]) => ({
+    id: slug, slug, name: guide.name, flag: guide.flag, badge: guide.badge,
+    tagline: guide.tagline, overview: guide.overview, image: guide.image,
+    avgCost: guide.metrics[0][1], stayBack: guide.metrics[1][1],
+    intakes: 'Confirm with each institution', livingCost: 'Location-specific',
+    popularCourses: guide.courses,
+    admissionMin: 'Programme-specific requirements',
+    ieltsMin: 'Check the course language requirements',
+  }))
 ];
 
